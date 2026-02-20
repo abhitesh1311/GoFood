@@ -42,8 +42,8 @@ function Footer() {
         <div style={{ flex: '1 1 200px' }}>
           <h4>Contact</h4>
           <p style={{ color: '#aaa' }}>📍 Delhi, India</p>
-          <p style={{ color: '#aaa' }}>📞 +91 98765 43210</p>
-          <p style={{ color: '#aaa' }}>✉️ support@foodie.com</p>
+          <p style={{ color: '#aaa' }}>📞 +91 9504939711</p>
+          <p style={{ color: '#aaa' }}>✉️ support@gofood.com</p>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ function Footer() {
           fontSize: '14px'
         }}
       >
-        © {new Date().getFullYear()} Foodie. All rights reserved.
+        © {new Date().getFullYear()} Developed by Mr.Abhitesh
       </div>
     </footer>
   );
