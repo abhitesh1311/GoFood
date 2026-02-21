@@ -13,7 +13,7 @@ export default function MyOrder() {
 
       if (!email) return;
 
-      const response = await fetch("http://localhost:5001/api/MyorderData", {
+      const response = await fetch("http://13.60.11.143:5001/api/MyorderData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -15,7 +15,7 @@ export default function Cart() {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/api/orderData", {
+      const response = await fetch("http://13.60.11.143:5001/api/orderData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
