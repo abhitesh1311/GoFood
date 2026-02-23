@@ -10,36 +10,38 @@ function MyCarousel({ search, setSearch }) {
         overflow: "hidden"
       }}
     >
-
       
       <div
         style={{
           position: "absolute",
-          top: "90%",
+          top: "75%",              
           left: "50%",
           transform: "translate(-50%, -50%)",
           zIndex: 10,
-          textAlign: "center"
+          width: "90%",            
+          maxWidth: "420px",       
+          textAlign: "center",
+          padding: "0 10px"        
         }}
       >
         <input
           type="text"
           placeholder="Search food..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}   
+          onChange={(e) => setSearch(e.target.value)}
           style={{
-            width: "500px",
+            width: "100%",          
             padding: "14px",
-            borderRadius: "16px",
+            borderRadius: "14px",
             border: "none",
             outline: "none",
-            fontSize: "18px",
-            
+            fontSize: "clamp(14px, 2vw, 18px)", 
+            boxSizing: "border-box"
           }}
         />
       </div>
 
-      
+   
       <Carousel fade>
         <Carousel.Item>
           <img

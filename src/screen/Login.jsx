@@ -12,10 +12,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -23,32 +23,35 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://13.60.11.143:5001/api/LoginUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // ✅ IMPORTANT — lowercase endpoint
+      const response = await fetch(
+        "http://13.60.11.143:5001/api/LoginUser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
+      console.log("LOGIN RESPONSE:", data);
 
-      
-      if (data.success) {
-        localStorage.setItem("token", data.authToken);
+      // ✅ safe success check
+      if (data.success === true && data.authToken) {
+        localStorage.setItem("authToken", data.authToken);
         localStorage.setItem("userEmail", formData.email);
 
-        alert("Login Successful ");
-        navigate("/");
-
+        alert("Login Successful ✅");
+        navigate("/", { replace: true });
       } else {
-        alert("Invalid Credentials ");
+        alert(data.msg || "Invalid Credentials ❌");
       }
-
     } catch (error) {
-      console.log(error);
-      alert("Server Error ");
+      console.error("Login error:", error);
+      alert("Server Error ❌");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -81,8 +84,7 @@ const Login = () => {
         </button>
 
         <p style={{ textAlign: "center", marginTop: "15px" }}>
-          Don't have an account?
-          <Link to="/signup"> Signup</Link>
+          Don't have an account? <Link to="/signup">Signup</Link>
         </p>
       </form>
     </div>
