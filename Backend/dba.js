@@ -29,8 +29,8 @@ const mongoDB = async () => {
 
     console.log("⏳ Fetching collections...");
 
-    const foodData = await db.collection("Food_Items").find({}).toArray();
-    const foodCategory = await db.collection("Food_Category").find({}).toArray();
+    const foodData = await db.collection("food_items").find({}).toArray();
+    const foodCategory = await db.collection("foodcategory").find({}).toArray();
 
     global.Food_Items = foodData;
     global.Food_Category = foodCategory;
