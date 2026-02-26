@@ -6,15 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function Cards({ foodItem }) {
   const dispatch = useDispatchCart();
-  const cart = useCart();
+  const cartData = useCart();
   const navigate = useNavigate();
 
   const options = foodItem.options?.[0] || {};
   const priceOptions = Object.keys(options);
 
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(0);
   const [size, setSize] = useState("");
-  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     if (foodItem.options?.length > 0) {
@@ -23,68 +22,53 @@ export default function Cards({ foodItem }) {
     }
   }, [foodItem]);
 
-
   useEffect(() => {
-    const existingItem = cart.find(
-      (item) =>
-        item.name === foodItem.name && item.size === size
+    const item = cartData.find(
+      (i) => i.name === foodItem.name && i.size === size
     );
-
-    if (existingItem) {
-      setAdded(true);
-      setQty(existingItem.qty);
-    } else {
-      setAdded(false);
-      setQty(1);
-    }
-  }, [cart, foodItem.name, size]);
+    setQty(item ? item.qty : 0);
+  }, [cartData, size, foodItem.name]);
 
   if (!priceOptions.length) return null;
 
-  const finalPrice = Number(qty) * Number(options[size] || 0);
+  const price = Number(options[size] || 0);
+  const finalPrice = qty > 0 ? qty * price : price;
 
-  const handleAddToCart = () => {
-    const token = localStorage.getItem("authToken");
-
+  // ✅ FIXED HANDLE ADD
+  const handleAdd = () => {
+    const token = localStorage.getItem("authToken"); // ✅ correct key
 
     if (!token) {
+      // pending cart save
+      localStorage.setItem(
+        "pendingCart",
+        JSON.stringify({
+          name: foodItem.name,
+          size,
+          price,
+        })
+      );
+
       navigate("/login");
       return;
     }
 
-
     dispatch({
       type: "ADD",
       name: foodItem.name,
-      qty,
       size,
-      price: finalPrice,
+      price,
     });
-
-    setAdded(true);
   };
 
-  const increaseQty = () => {
-    setQty((prev) => Math.min(prev + 1, 10));
+  const handleRemove = () => {
+    dispatch({
+      type: "REMOVE",
+      name: foodItem.name,
+      size,
+      price,
+    });
   };
-
-  const decreaseQty = () => {
-    if (qty > 1) {
-      setQty((prev) => prev - 1);
-    }
-  };
-
-  useEffect(() => {
-    if (added) {
-      dispatch({
-        type: "UPDATE",
-        name: foodItem.name,
-        qty,
-        size,
-        price: finalPrice,
-      });
-    }
-  }, [qty]);
 
   return (
     <Card className="h-100 shadow" style={{ width: "100%" }}>
@@ -102,37 +86,31 @@ export default function Cards({ foodItem }) {
         </Card.Text>
 
         <div className="mt-auto">
-          <div className="d-flex align-items-center mb-2">
-            <select
-              className="m-2 bg-success text-white rounded"
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-            >
-              {priceOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            className="m-2 bg-success text-white rounded"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+          >
+            {priceOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
 
           <div className="fs-5 mb-2">₹ {finalPrice}/-</div>
 
-          {!added ? (
-            <Button
-              variant="success"
-              className="w-100"
-              onClick={handleAddToCart}
-            >
+          {qty === 0 ? (
+            <Button variant="success" className="w-100" onClick={handleAdd}>
               Add to Cart
             </Button>
           ) : (
-            <div className="d-flex justify-content-center align-items-center gap-3">
-              <Button variant="danger" onClick={decreaseQty}>
+            <div className="d-flex justify-content-between align-items-center bg-success text-white rounded px-3 py-2">
+              <Button variant="light" size="sm" onClick={handleRemove}>
                 −
               </Button>
-              <span className="fs-5">{qty}</span>
-              <Button variant="success" onClick={increaseQty}>
+              <span className="fw-bold">{qty}</span>
+              <Button variant="light" size="sm" onClick={handleAdd}>
                 +
               </Button>
             </div>

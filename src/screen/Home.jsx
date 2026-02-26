@@ -11,7 +11,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
 
   const loadData = async () => {
-    let response = await fetch("http://13.60.11.143:5001/api/foodData", {
+    let response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/foodData`, {
       method: "POST",
       headers: { "Content-Type": "application/json" }
     });

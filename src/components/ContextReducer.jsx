@@ -6,21 +6,53 @@ const CartDispatchContext = createContext();
 const reducer = (state, action) => {
   switch (action.type) {
 
-    case "ADD":
+    case "ADD": {
+      const existIndex = state.findIndex(
+        item => item.name === action.name && item.size === action.size
+      );
+
+      if (existIndex !== -1) {
+        const updated = [...state];
+        updated[existIndex] = {
+          ...updated[existIndex],
+          qty: updated[existIndex].qty + 1,
+          price: updated[existIndex].price + action.price
+        };
+        return updated;
+      }
+
       return [
         ...state,
         {
           name: action.name,
-          qty: action.qty,
+          qty: 1,
           size: action.size,
           price: action.price,
         }
       ];
+    }
 
-    case "REMOVE":
-      let newArr = [...state];
-      newArr.splice(action.index, 1);
-      return newArr;
+    case "REMOVE": {
+      const existIndex = state.findIndex(
+        item => item.name === action.name && item.size === action.size
+      );
+
+      if (existIndex === -1) return state;
+
+      const updated = [...state];
+
+      if (updated[existIndex].qty > 1) {
+        updated[existIndex] = {
+          ...updated[existIndex],
+          qty: updated[existIndex].qty - 1,
+          price: updated[existIndex].price - action.price
+        };
+        return updated;
+      }
+
+      updated.splice(existIndex, 1);
+      return updated;
+    }
 
     case "DROP":
       return [];

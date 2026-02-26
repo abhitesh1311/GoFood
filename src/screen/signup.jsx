@@ -20,7 +20,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://13.60.11.143:5001/api/CreateUser", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/CreateUser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

@@ -23,9 +23,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // ✅ IMPORTANT — lowercase endpoint
       const response = await fetch(
-        "http://13.60.11.143:5001/api/LoginUser",
+        `${import.meta.env.VITE_BACKEND_URL}/LoginUser`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -34,14 +33,13 @@ const Login = () => {
       );
 
       const data = await response.json();
-      console.log("LOGIN RESPONSE:", data);
 
-      // ✅ safe success check
       if (data.success === true && data.authToken) {
         localStorage.setItem("authToken", data.authToken);
         localStorage.setItem("userEmail", formData.email);
 
         alert("Login Successful ✅");
+
         navigate("/", { replace: true });
       } else {
         alert(data.msg || "Invalid Credentials ❌");
